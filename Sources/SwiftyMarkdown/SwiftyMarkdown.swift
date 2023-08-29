@@ -249,6 +249,8 @@ If that is not set, then the system default will be used.
 	public var bullet : String = "・"
 	
 	public var underlineLinks : Bool = false
+
+    public var imageBundle: Bundle?
 	
 	public var frontMatterAttributes : [String : String] {
 		get {
@@ -593,7 +595,11 @@ extension SwiftyMarkdown {
 				}
 				#if !os(macOS)
 				let image1Attachment = NSTextAttachment()
-				image1Attachment.image = UIImage(named: token.metadataStrings[imgIdx])
+                if #available(iOS 13, *) {
+                    image1Attachment.image = UIImage(named: token.metadataStrings[imgIdx], in: imageBundle, compatibleWith: nil)
+                } else {
+                    image1Attachment.image = UIImage(named: token.metadataStrings[imgIdx])
+                }
 				let str = NSAttributedString(attachment: image1Attachment)
 				finalAttributedString.append(str)
 				#elseif !os(watchOS)
